@@ -1,0 +1,50 @@
+@page "/fetchdata"
+@using Facturation.Shared
+@inject HttpClient Http
+
+<h1>Compte client</h1>
+
+<p>Bienvenue sur votre interface, voilà votre liste de factures.</p>
+
+@if (factures == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date d'émission</th>
+                <th>Date de règlement attendu</th>
+                <th>Montant dû</th>
+                <th>Montant réglé</th>
+                <th>Numéro</th>
+                <th>Client</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var facture in factures)
+            {
+            <tr>
+                <td>@facture.DateE.ToShortDateString()</td>
+                <td>@facture.DateR.ToShortDateString()</td>
+                <td>@facture.MontantD</td>
+                <td>@facture.MontantR</td>
+                <td>@facture.Numero</td>
+                <td>@facture.Client</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Facture[] factures;
+
+    protected override async Task OnInitializedAsync()
+    {
+        factures = await Http.GetFromJsonAsync<Facture[]>("Liste factures");
+    }
+
+}
